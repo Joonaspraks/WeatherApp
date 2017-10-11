@@ -1,11 +1,19 @@
 import lombok.Data;
 
 @Data class WeatherItem {
-    private float temperature;
+    private double temperature;
     private String city;
 
-    WeatherItem(float temperature, String city){
+    WeatherItem(double temperature, String city) {
         this.temperature = temperature;
         this.city = city;
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherItem{" +
+                "temperature=" + temperature +
+                ", city='" + city + '\'' +
+                '}';
     }
 }
