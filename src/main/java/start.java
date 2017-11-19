@@ -1,6 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -50,6 +55,9 @@ public class start {
                 br.close();
             }
             results = controller.getReports("forecast", city);
+            List<String> lines = Arrays.asList(results.toString());
+            Path file = Paths.get("forecast.txt");
+            Files.write(file, lines, Charset.forName("UTF-8"));
         }
 
 
