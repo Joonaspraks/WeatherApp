@@ -19,7 +19,7 @@ class WeatherExtremes {
 
     @Override
     public String toString() {
-        return "WeatherExtremes{" +
+        return "{" +
                 "date=" + date +
                 ", maxTemp=" + maxTemp +
                 ", minTemp=" + minTemp +

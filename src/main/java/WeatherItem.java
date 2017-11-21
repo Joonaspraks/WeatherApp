@@ -11,7 +11,7 @@ import lombok.Data;
 
     @Override
     public String toString() {
-        return "WeatherItem{" +
+        return "{" +
                 "temperature=" + temperature +
                 ", city='" + city + '\'' +
                 '}';

@@ -7,17 +7,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class start {
     public static void main(String[] args) throws IOException {
 
         OptionSelector optionSelector = new OptionSelector();
-        String result = optionSelector.offerOptions();
+        String result = "";
 
-        System.out.println(result);
+        while(!Objects.equals(result, "exit")) {
+            result = optionSelector.offerOptions();
+            System.out.println(result+"\n");
+        }
 
-
+        System.out.println("System has been exited");
 
         /*controller.getReports("forecast","helsinki");
         controller.getReportNow("weather","madrid");

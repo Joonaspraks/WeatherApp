@@ -12,7 +12,7 @@ class Coordinates {
 
     @Override
     public String toString() {
-        return "Coordinates{" +
+        return "{" +
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
