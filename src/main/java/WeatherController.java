@@ -14,6 +14,10 @@ import java.util.List;
 
 class WeatherController {
 
+    String combinedWeatherData(String city){
+     return null;
+    }
+
     WeatherItem getReportNow(String call, String city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
