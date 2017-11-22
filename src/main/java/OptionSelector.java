@@ -31,7 +31,7 @@ class OptionSelector {
                 while (Objects.equals(results, "")) {
                     System.out.println("Enter a city of your choosing");
                     city = sc.next();
-                    results = controller.getCombinedWeatherData("weather", city);
+                    results = controller.getCombinedWeatherData(city);
                 }
             } else if (Objects.equals(option, "2")) {
                 try (BufferedReader br = new BufferedReader(new FileReader("src/main/file.txt"))) {
@@ -45,7 +45,7 @@ class OptionSelector {
                     }
                     city = sb.toString();*/
                 }
-                results = controller.getCombinedWeatherData("forecast", city);
+                results = controller.getCombinedWeatherData(city);
                 List<String> lines = Collections.singletonList(results);
                 Path file = Paths.get("forecast.txt");
                 Files.write(file, lines, Charset.forName("UTF-8"));

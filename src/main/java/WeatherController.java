@@ -15,51 +15,60 @@ import java.util.List;
 
 class WeatherController {
 
-    String getCombinedWeatherData(String call, String city) throws IOException {
-        WeatherItem wItem = getReportNow(call, city);
-        List<WeatherExtremes> wExtremes = getReports(call, city);
-        Coordinates coords = getCityCoordinates(call, city);
+    String getCombinedWeatherData(String city) throws IOException {
+        WeatherItem wItem = getReportNow(city);
+        List<WeatherExtremes> wExtremes = getReports(city);
+        Coordinates coords = getCityCoordinates(city);
 
-        String result = Json.createObjectBuilder()
-                .add("WeatherItem", wItem.toString())
-                .add("WeatherExtremes", wExtremes.toString())
-                .add("Coordinates", coords.toString())
-                .build()
-                .toString();
+        if(wItem!=null&&wExtremes!=null&&coords!=null) {
+            String result = Json.createObjectBuilder()
+                    .add("WeatherItem", wItem.toString())
+                    .add("WeatherExtremes", wExtremes.toString())
+                    .add("Coordinates", coords.toString())
+                    .build()
+                    .toString();
 
-        return result;
+            return result;
+        }
+        return null;
     }
 
-    WeatherItem getReportNow(String call, String city) throws IOException {
+    WeatherItem getReportNow(String city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        call = "weather";
+        String call = "weather";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
-        WeatherResponse weather = mapper.readValue(requester(call, city), WeatherResponse.class);
+        InputStream input = requester(call, city);
+        if(input!=null) {
+            WeatherResponse weather = mapper.readValue(input, WeatherResponse.class);
 
-        double temp = Math.round(toCelsius(weather.getMain().getTemp()));
-        String responseCity = weather.getName();
-        WeatherItem item = new WeatherItem(temp, responseCity);
-        //System.out.println(item.toString());
-        return item;
+            double temp = Math.round(toCelsius(weather.getMain().getTemp()));
+            String responseCity = weather.getName();
+            //System.out.println(item.toString());
+            return new WeatherItem(temp, responseCity);
+        }
+        return null;
     }
 
-    Coordinates getCityCoordinates(String call, String city) throws IOException {
+    Coordinates getCityCoordinates(String city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        call = "weather";
+        String call = "weather";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
-        WeatherResponse weather = mapper.readValue(requester(call, city), WeatherResponse.class);
+        InputStream input = requester(call, city);
+        if (input!=null) {
+            WeatherResponse weather = mapper.readValue(input, WeatherResponse.class);
 
-        double longitude = weather.getCoord().getLon();
-        double latitude = weather.getCoord().getLat();
+            double longitude = weather.getCoord().getLon();
+            double latitude = weather.getCoord().getLat();
 
-        Coordinates item = new Coordinates(longitude, latitude);
-        //System.out.println(item.toString());
-        return item;
+            //System.out.println(item.toString());
+            return new Coordinates(longitude, latitude);
+        }
+        return null;
     }
 
-    List<WeatherExtremes> getReports(String call, String city) throws IOException {
+    List<WeatherExtremes> getReports(String city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        call = "forecast";
+        String call = "forecast";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
         InputStream inputStr = requester(call, city);
         if (inputStr != null) {
