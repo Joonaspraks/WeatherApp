@@ -16,7 +16,7 @@ class OptionCaller {
     private List<String> cities = new ArrayList<>();
     private String result;
     String response ="";
-    private String extension = ".txt";
+    private String extension = ".json";
     WeatherController controller = new WeatherController(new WeatherRequester());
 
     String getDataByConsole(Scanner sc) throws IOException {
@@ -26,7 +26,7 @@ class OptionCaller {
 
         response=(result!=null?
                 fileManager.writeToFile(result, extension, cities.get(0))?
-                        "File "+cities.get(0)+".txt created":
+                        "File "+cities.get(0)+".json created":
                         "File creation failed":
                 "No results found");
 
@@ -39,10 +39,10 @@ class OptionCaller {
             result = controller.getCombinedWeatherData(city);
             if (result != null) {
                 response+=(fileManager.writeToFile(result, extension, city)?
-                        "File "+city+".txt created"
+                        "File "+city+".json created"
                         :"File " +city+ "creation failed")+"\n";
             }
-            else response+="File " +city+ " creation failed"+"\n";
+            else response+="No results found for "+city+"\n";
         }
         return response;
     }

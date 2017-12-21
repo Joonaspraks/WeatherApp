@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 public class OptionCallerTests {
@@ -22,20 +23,28 @@ public class OptionCallerTests {
 
     }
     @Test
-    public void getDataByConsole() throws IOException {
+    public void getDataByConsoleReturnsCorrectStatement() throws IOException {
         fileManagerMock = Mockito.mock(FileManager.class);
-        when(fileManagerMock.writeToFile(anyString(), eq(".txt"), eq("Bratislava"))).thenReturn(true);
-        //when(fileManagerMock.checkFile("Bratislava", ".txt")).thenReturn(true);
+        when(fileManagerMock.writeToFile(anyString(), eq(".json"), eq("Bratislava"))).thenReturn(true);
+
         OptionCaller optionCaller = new OptionCaller(fileManagerMock);
         ByteArrayInputStream in = new ByteArrayInputStream("Bratislava".getBytes());
         String result = optionCaller.getDataByConsole(new Scanner(in));
-        Assert.assertEquals("File Bratislava.txt created", result);
+        Assert.assertEquals("File Bratislava.json created", result);
     }
     @Test
-    public void getDataByFileCreatesCorrectlyLabeledFiles() throws IOException {
-        /*new File("London.txt").delete();
-        new File("Paris.txt").delete();
-        new File("Tokyo.txt").delete();*/
+    public void getDataByConsoleUsesFileManagerRequiredMethods() throws IOException {
+        fileManagerMock = Mockito.mock(FileManager.class);
+        when(fileManagerMock.writeToFile(anyString(), eq(".json"), eq("Bratislava"))).thenReturn(true);
+
+        OptionCaller optionCaller = new OptionCaller(fileManagerMock);
+        ByteArrayInputStream in = new ByteArrayInputStream("Bratislava".getBytes());
+        optionCaller.getDataByConsole(new Scanner(in));
+
+        Mockito.verify(fileManagerMock).writeToFile(anyString(), anyString(), anyString());
+    }
+    @Test
+    public void getDataByFileReturnsCorrectStatements() throws IOException {
         fileManagerMock = Mockito.mock(FileManager.class);
         List<String> list = new ArrayList<>();
         list.add("London");
@@ -47,10 +56,22 @@ public class OptionCallerTests {
         OptionCaller optionCaller = new OptionCaller(fileManagerMock);
         String result = optionCaller.getDataByFile();
 
-        Assert.assertEquals("File London.txt created\nFile Paris.txt created\nFile Tokyo.txt created\n", result);
-        /*new File("London.txt").delete();
-        new File("Paris.txt").delete();
-        new File("Tokyo.txt").delete();*/
+        Assert.assertEquals("File London.json created\nFile Paris.json created\nFile Tokyo.json created\n", result);
     }
+    @Test
+    public void getDataByFileUsesFileManagerRequiredMethods() throws IOException {
+        fileManagerMock = Mockito.mock(FileManager.class);
+        List<String> list = new ArrayList<>();
+        list.add("London");
+        list.add("Paris");
+        list.add("Tokyo");
+        when(fileManagerMock.readFromFile(anyString())).thenReturn(list);
+        when(fileManagerMock.writeToFile(anyString(), anyString(), anyString())).thenReturn(true);
 
+        OptionCaller optionCaller = new OptionCaller(fileManagerMock);
+        optionCaller.getDataByFile();
+
+        Mockito.verify(fileManagerMock).readFromFile(anyString());
+        Mockito.verify(fileManagerMock, times(3)).writeToFile(anyString(), anyString(), anyString());
+    }
 }

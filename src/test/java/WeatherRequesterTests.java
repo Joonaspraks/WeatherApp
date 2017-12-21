@@ -6,6 +6,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+
 public class WeatherRequesterTests {
     private WeatherRequester weatherRequester;
     @Before
@@ -30,5 +32,13 @@ public class WeatherRequesterTests {
 
         Assert.assertSame(null, in);
     }
+    @Test
+    public void requestWeatherResponseReturnsInputStreamIfCityAndCallCorrect() throws IOException {
+        String city = "Paris";
+        String call = "weather";
 
+        InputStream in = weatherRequester.requestWeatherResponse(call, city);
+
+        Assert.assertThat(in, instanceOf(InputStream.class));
+    }
 }

@@ -17,23 +17,26 @@ public class FileManagerTests {
         fileManager = new FileManager();
     }
     @Test
-    public void checkFileReturnsTrueWhenFileExists(){
-        File fileMock = Mockito.mock(File.class);
-        when(fileMock.exists()).thenReturn(true);
+    public void checkFileReturnsTrueWhenFileExists() throws IOException {
+        File file = new File("foo.json");
+        file.createNewFile();
+        boolean result = fileManager.checkFile("foo", ".json");
+        Assert.assertEquals(true, result);
+        file.delete();
     }
     @Test
     public void checkFileReturnsFalseWhenFileNotExist() throws IOException {
-        new File("foo.txt").delete();
-        boolean result = fileManager.checkFile("foo", ".txt");
+        new File("foo.json").delete();
+        boolean result = fileManager.checkFile("foo", ".json");
 
-        Assert.assertEquals(result, false);
+        Assert.assertEquals(false, result);
     }
     @Test
     public void checkFileReturnsFalseWhenExtensionNotMatch() throws IOException {
-        File file = new File("foo.txt");
+        File file = new File("foo.json");
         file.createNewFile();
-        boolean result = fileManager.checkFile("foo", ".json");
+        boolean result = fileManager.checkFile("foo", ".txt");
         file.delete();
-        Assert.assertEquals(result, false);
+        Assert.assertEquals(false, result);
     }
 }

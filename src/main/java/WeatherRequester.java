@@ -17,7 +17,7 @@ public class WeatherRequester {
             try {
                 return connection.getInputStream();
             } catch (FileNotFoundException error) {
-                System.out.println("The inserted 'city' " + city + " does not exist");
+                System.out.println("The inserted 'city' " + city + " or 'call' "+call+" does not exist");
                 return null;
             }
         }catch(java.net.UnknownHostException error){

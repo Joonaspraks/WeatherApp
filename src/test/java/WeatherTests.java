@@ -1,6 +1,7 @@
 import Models.WeatherExtremes;
 import Models.WeatherItem;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class WeatherTests {
 
+    @Ignore
     @Test
     public void firstMock() throws IOException {
         WeatherController wControllerMock = Mockito.mock(WeatherController.class);
@@ -26,7 +28,7 @@ public class WeatherTests {
         verify(wControllerMock).getCityCoordinates("Paris");*/
         //Assert.assertEquals(answer, null);
     }
-
+    @Ignore
     @Test
     public void getReportNowIsRequestCitySameAsInResponse() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
@@ -37,7 +39,7 @@ public class WeatherTests {
 
         Assert.assertSame(item.getCity(), city);
     }
-
+    @Ignore
     @Test
     public void getReportNowIsRequestCityEqualToResponseCity() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
@@ -48,7 +50,7 @@ public class WeatherTests {
 
         Assert.assertEquals(item.getCity(), city);
     }
-
+    @Ignore
     @Test
     public void getReportsIsRequestCityEqualToResponseCities() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
@@ -67,7 +69,7 @@ public class WeatherTests {
 
         Assert.assertEquals(cities, actualCities);
     }
-
+    @Ignore
     @Test
     public void getReportsIsAmountOfResponseObjectsN() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
@@ -79,7 +81,7 @@ public class WeatherTests {
 
         //Assert.assertEquals(items.size(), days);
     }
-
+    @Ignore
     @Test
     public void getReportsIsAmountOfWeatherItemsInResponseObjects2() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
@@ -90,7 +92,7 @@ public class WeatherTests {
 
         //Assert.assertEquals(items.size(), 4);
     }
-
+    @Ignore
     @Test
     public void getReportNowIsResponseTemperatureSameAsDouble() throws IOException {
         WeatherController controller = new WeatherController(new WeatherRequester());
