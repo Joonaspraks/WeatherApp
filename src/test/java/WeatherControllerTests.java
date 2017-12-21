@@ -93,4 +93,5 @@ public class WeatherControllerTests {
         boolean result = lat >= -90 && lat <= 90;
         Assert.assertEquals(true, result);
     }
+
 }
