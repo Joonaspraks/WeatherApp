@@ -17,7 +17,7 @@ class OptionCaller {
     private String result;
     String response ="";
     private String extension = ".txt";
-    WeatherController controller = new WeatherController();
+    WeatherController controller = new WeatherController(new WeatherRequester());
 
     String getDataByConsole(Scanner sc) throws IOException {
         System.out.println("Enter a city of your choosing");
@@ -33,13 +33,8 @@ class OptionCaller {
         return response;
     }
     String getDataByFile() throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/requestedCities.txt"))) {
-            String line = br.readLine();
-            while (line != null) {
-                cities.add(line);
-                line = br.readLine();
-            }
-        }
+
+        cities = fileManager.readFromFile("src/main/resources/requestedCities.txt");
         for(String city:cities) {
             result = controller.getCombinedWeatherData(city);
             if (result != null) {

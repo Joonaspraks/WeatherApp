@@ -29,29 +29,29 @@ public class WeatherTests {
 
     @Test
     public void getReportNowIsRequestCitySameAsInResponse() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "weather";
 
-        WeatherItem item = weather.getCurrentReport(city);
+        WeatherItem item = controller.getCurrentReport(city);
 
         Assert.assertSame(item.getCity(), city);
     }
 
     @Test
     public void getReportNowIsRequestCityEqualToResponseCity() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "weather";
 
-        WeatherItem item = weather.getCurrentReport(city);
+        WeatherItem item = controller.getCurrentReport(city);
 
         Assert.assertEquals(item.getCity(), city);
     }
 
     @Test
     public void getReportsIsRequestCityEqualToResponseCities() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "forecast";
         List<String> actualCities = Arrays.asList("Paris", "Paris", "Paris");
@@ -70,7 +70,7 @@ public class WeatherTests {
 
     @Test
     public void getReportsIsAmountOfResponseObjectsN() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "forecast";
         int days = 3;
@@ -82,7 +82,7 @@ public class WeatherTests {
 
     @Test
     public void getReportsIsAmountOfWeatherItemsInResponseObjects2() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "forecast";
 
@@ -93,12 +93,12 @@ public class WeatherTests {
 
     @Test
     public void getReportNowIsResponseTemperatureSameAsDouble() throws IOException {
-        WeatherController weather = new WeatherController();
+        WeatherController controller = new WeatherController(new WeatherRequester());
         String city = "Paris";
         String call = "weather";
         double dType = 0;
 
-        WeatherItem item = weather.getCurrentReport(city);
+        WeatherItem item = controller.getCurrentReport(city);
 
         Assert.assertSame(item.getTemperature(), dType);
     }

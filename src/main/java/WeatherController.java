@@ -16,6 +16,10 @@ import java.util.Date;
 import java.util.List;
 
 class WeatherController {
+    private WeatherRequester weatherRequester;
+    public WeatherController(WeatherRequester weatherRequester){
+        this.weatherRequester=weatherRequester;
+    }
     //Use to export all data to one file
     /*String getEachCombinedWeatherData(List<String> cities) throws IOException {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -26,7 +30,7 @@ class WeatherController {
                 .add("WeatherCombinedDataPackage", arrayBuilder)
                 .build().toString();
     }*/
-    WeatherRequester weatherRequester = new WeatherRequester();
+
     Utility utility = new Utility();
     String getCombinedWeatherData(String city) throws IOException {
 
