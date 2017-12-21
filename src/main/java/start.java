@@ -14,17 +14,12 @@ public class start {
     public static void main(String[] args) throws IOException {
 
         OptionSelector optionSelector = new OptionSelector();
-        String result = "";
+        boolean exit = false;
 
-        while(!Objects.equals(result, "exit")) {
-            result = optionSelector.offerOptions();
-            System.out.println(result+"\n");
+        while(!exit) {
+            exit = optionSelector.offerOptions();
         }
 
         System.out.println("System has been exited");
-
-        /*controller.getReports("forecast","helsinki");
-        controller.getReportNow("weather","madrid");
-        controller.getCityCoordinates("weather","tallinn");*/
     }
 }

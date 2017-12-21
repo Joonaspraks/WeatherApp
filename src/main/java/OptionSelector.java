@@ -1,6 +1,5 @@
-import Interfaces.IInputReader;
-
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -10,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 class OptionSelector {
-    String offerOptions() throws IOException {
+    boolean offerOptions() throws IOException {
 
         System.out.println("Choose a method of your liking:");
         System.out.println("'1' to read the target city from console");
@@ -20,44 +19,26 @@ class OptionSelector {
         Scanner sc = new Scanner(System.in);
         String option;
 
-        String results = "";
+        String result = "";
+        OptionCaller optionCaller = new OptionCaller(new FileManager());
 
-        WeatherController controller = new WeatherController();
-        String city;
-
-        while (Objects.equals(results, "")) {
+        while (Objects.equals(result, "")) {
             option = sc.next();
             if (Objects.equals(option, "1")) {
-                while (Objects.equals(results, "")) {
-                    System.out.println("Enter a city of your choosing");
-                    city = sc.next();
-                    results = controller.getCombinedWeatherData(city);
-                }
-            } else if (Objects.equals(option, "2")) {
-                try (BufferedReader br = new BufferedReader(new FileReader("src/main/file.txt"))) {
-                    //StringBuilder sb = new StringBuilder();
-                    city = br.readLine();
+                result = optionCaller.getDataByConsole(sc);
 
-                    /*while (line != null) {
-                        sb.append(line);
-                        sb.append(System.lineSeparator());
-                        line = br.readLine();
-                    }
-                    city = sb.toString();*/
-                }
-                results = controller.getCombinedWeatherData(city);
-                List<String> lines = Collections.singletonList(results);
-                Path file = Paths.get("forecast.txt");
-                Files.write(file, lines, Charset.forName("UTF-8"));
+            } else if (Objects.equals(option, "2")) {
+                result = optionCaller.getDataByFile();
             }
             else if(Objects.equals(option,"3")){
-                return "exit";
+                return true;
             }
             else {
-                System.out.println("Not a suggested option, please select again!");
+                System.out.println("Not a suggested option, please select again");
             }
         }
-        return results;
-    }
+        System.out.println(result);
+        return false;
 
+    }
 }

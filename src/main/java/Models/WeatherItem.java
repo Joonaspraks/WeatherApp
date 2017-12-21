@@ -1,10 +1,13 @@
+package Models;
+
 import lombok.Data;
 
-@Data class WeatherItem {
+@Data
+public class WeatherItem {
     private double temperature;
     private String city;
 
-    WeatherItem(double temperature, String city) {
+    public WeatherItem(double temperature, String city) {
         this.temperature = temperature;
         this.city = city;
     }

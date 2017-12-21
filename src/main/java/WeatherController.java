@@ -1,47 +1,77 @@
 
 import Beans.Forecast.ForecastResponse;
 import Beans.Weather.WeatherResponse;
+import Models.Coordinates;
+import Models.WeatherExtremes;
+import Models.WeatherItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.json.Json;
-import java.io.FileNotFoundException;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 class WeatherController {
-
+    //Use to export all data to one file
+    /*String getEachCombinedWeatherData(List<String> cities) throws IOException {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (String city:cities){
+            arrayBuilder.add(getCombinedWeatherData(city));
+        }
+        return Json.createObjectBuilder()
+                .add("WeatherCombinedDataPackage", arrayBuilder)
+                .build().toString();
+    }*/
+    WeatherRequester weatherRequester = new WeatherRequester();
+    Utility utility = new Utility();
     String getCombinedWeatherData(String city) throws IOException {
-        WeatherItem wItem = getReportNow(city);
-        List<WeatherExtremes> wExtremes = getReports(city);
-        Coordinates coords = getCityCoordinates(city);
 
-        if(wItem!=null&&wExtremes!=null&&coords!=null) {
-            String result = Json.createObjectBuilder()
-                    .add("WeatherItem", wItem.toString())
-                    .add("WeatherExtremes", wExtremes.toString())
-                    .add("Coordinates", coords.toString())
+        WeatherItem wItem = getCurrentReport(city);
+        int amountOfExtremes = 3;
+        List<WeatherExtremes> wExtremes = wItem!=null? getWeatherExtremes(city, amountOfExtremes):null;
+        Coordinates coordinates = wExtremes!=null?getCityCoordinates(city):null;
+
+        if(wItem!=null&&wExtremes!=null&&coordinates!=null) {
+
+            JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
+                .add("WeatherItem", Json.createObjectBuilder()
+                    .add("temperature", wItem.getTemperature())
+                    .add("city", wItem.getCity()));
+
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            for (WeatherExtremes we:wExtremes){
+                arrayBuilder
+                    .add(Json.createObjectBuilder()
+                        .add("city", we.getCity())
+                        .add("date", we.getDate().getTime()/1000)
+                        .add("min", we.getMinTemp())
+                        .add("max", we.getMaxTemp()));
+            }
+
+            return objectBuilder
+                .add("WeatherExtremes", arrayBuilder)
+                .add("Coordinates", Json.createObjectBuilder()
+                    .add("lat", coordinates.getLatitude())
+                    .add("lon", coordinates.getLongitude()))
                     .build()
                     .toString();
-
-            return result;
         }
         return null;
     }
 
-    WeatherItem getReportNow(String city) throws IOException {
+    WeatherItem getCurrentReport(String city) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String call = "weather";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
-        InputStream input = requester(call, city);
+        InputStream input = weatherRequester.requestWeatherResponse(call, city);
         if(input!=null) {
             WeatherResponse weather = mapper.readValue(input, WeatherResponse.class);
 
-            double temp = Math.round(toCelsius(weather.getMain().getTemp()));
+            double temp = Math.round(utility.toCelsius(weather.getMain().getTemp()));
             String responseCity = weather.getName();
             //System.out.println(item.toString());
             return new WeatherItem(temp, responseCity);
@@ -53,7 +83,7 @@ class WeatherController {
         ObjectMapper mapper = new ObjectMapper();
         String call = "weather";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
-        InputStream input = requester(call, city);
+        InputStream input = weatherRequester.requestWeatherResponse(call, city);
         if (input!=null) {
             WeatherResponse weather = mapper.readValue(input, WeatherResponse.class);
 
@@ -66,20 +96,20 @@ class WeatherController {
         return null;
     }
 
-    List<WeatherExtremes> getReports(String city) throws IOException {
+    List<WeatherExtremes> getWeatherExtremes(String city, int amount) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String call = "forecast";
         //Map<String, Object> bean = mapper.readValue(stream, Map.class);
-        InputStream inputStr = requester(call, city);
+        InputStream inputStr = weatherRequester.requestWeatherResponse(call, city);
         if (inputStr != null) {
             ForecastResponse forecast = mapper.readValue(inputStr, ForecastResponse.class);
             List<WeatherExtremes> extremes = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < amount; i++) {
                 Beans.Forecast.List list = forecast.getList().get(i);
                 extremes.add(new WeatherExtremes(
                         new Date(list.getDt() * 1000),
-                        Math.round(toCelsius(list.getMain().getTempMax())),
-                        Math.round(toCelsius(list.getMain().getTempMin())),
+                        Math.round(utility.toCelsius(list.getMain().getTempMax())),
+                        Math.round(utility.toCelsius(list.getMain().getTempMin())),
                         forecast.getCity().getName()
                 ));
             }
@@ -90,23 +120,5 @@ class WeatherController {
         else return null;
     }
 
-    InputStream requester(String call, String city) throws IOException {
-        URL url = new URL("https://api.openweathermap.org/data/2.5/"+call+"?q="+city+"&APPID=460facc052c77294321c494c3d1fd4ad");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-        try{
-            return connection.getInputStream();
-        }
-        catch(FileNotFoundException error){
-            System.out.println("The inserted 'city' does not exist");
-            return null;
-        }
-
-    }
-
-    double toCelsius(double kelvin){
-        return kelvin-273.15;
-    }
 
 }
